@@ -6,24 +6,19 @@ Fixes from `claude/write-system-spec-wRmrY` branch, assessed against current mai
 
 ### High Priority
 
-#### Fix #13: Reconciler Doesn't Scan on Startup (Correctness)
+#### ✅ Fix #13: Reconciler Doesn't Scan on Startup (Correctness) - DONE
 **File**: `src/daemon.ts`
 
 Daemon starts reconciler but never calls `scan()`. Existing files on disk are invisible to Automerge structure until modified.
 
 ```typescript
-// Current (broken)
-const reconciler = new StashReconciler(stash);
-await reconciler.start();
-
-// Fixed
+// Fixed - added scan() call after start()
 const reconciler = new StashReconciler(stash);
 await reconciler.start();
 await reconciler.scan();  // Import existing files
 ```
 
-**Tests**:
-- Create files on disk → start daemon → list shows files
+**Tests**: `test/daemon.test.ts` - 2 tests added
 
 ---
 
@@ -245,15 +240,17 @@ Sequential fetches: structure → list docs → fetch each doc.
 
 ## Implementation Order
 
-1. Fix #10 (name validation) - security, simple
-2. Fix #7 (daemon race) - correctness
-3. Fix #2 (throttled reload) - performance
-4. Fix #1 (dirty flag) - correctness
-5. Fix #11 (config permissions) - security
-6. Fix #12 (remove inquirer) - cleanup
-7. Fix #6 (splice) - needs API verification
-8. Fix #9 (PID file) - portability
-9. Fix #4 (parallel fetch) - optimization
+1. ~~Fix #13 (reconciler scan on startup) - DONE~~
+2. Fix #14 (MCP list/glob consistency) - correctness
+3. Fix #10 (name validation) - security, simple
+4. Fix #7 (daemon race) - correctness
+5. Fix #2 (throttled reload) - performance
+6. Fix #1 (dirty flag) - correctness
+7. Fix #11 (config permissions) - security
+8. Fix #12 (remove inquirer) - cleanup
+9. Fix #6 (splice) - needs API verification
+10. Fix #9 (PID file) - portability
+11. Fix #4 (parallel fetch) - optimization
 
 ---
 
